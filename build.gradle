@@ -1,0 +1,70 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.4.30'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.9'
+    id 'java'
+    id 'edu.sc.seis.launch4j' version '2.4.9'
+}
+
+group = 'me.nicola'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClassName = "Engine"
+}
+
+javafx {
+    version = "11.0.2"
+    modules = ['javafx.controls', 'javafx.graphics']
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
+    implementation 'no.tornado:tornadofx:1.7.20'
+    implementation group: 'org.apache.commons', name: 'commons-email', version: '1.5'
+    implementation 'com.github.doyaaaaaken:kotlin-csv-jvm:0.15.0'
+
+}
+
+test {
+    useJUnit()
+}
+
+jar {
+    manifest {
+        attributes "Main-Class" : "EngineKt"
+    }
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "11"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "11"
+}
+
+task fatJar(type: Jar) {
+    baseName 'PrimaNotaHelper'
+
+    manifest {
+        attributes "Main-Class": "EngineKt"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+
+    with jar
+}
+
+launch4j {
+    mainClassName = 'EngineKt'
+    //icon = "${projectDir}/icons/myApp.ico"
+}
